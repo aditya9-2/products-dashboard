@@ -1,5 +1,5 @@
 import { Star } from "lucide-react";
-import { Review } from "@/services/productService";
+import { Review } from "@/types/products";
 
 export function ProductReviews({ reviews }: { reviews: Review[] }) {
     if (!reviews || reviews.length === 0) return null;
