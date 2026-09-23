@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
 import { loginUser } from "@/services/authService";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -41,13 +43,14 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 relative overflow-hidden p-4">
 
+            {/* Ambient Background Glows */}
             <div className="absolute top-[-10%] left-[-5%] w-96 h-96 bg-blue-200/50 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
             <div className="absolute bottom-[-10%] right-[-5%] w-96 h-96 bg-yellow-100/60 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
 
             {/* Main Glass Panel */}
             <div className="relative w-full max-w-225 grid grid-cols-1 md:grid-cols-2 bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] rounded-3xl overflow-hidden z-10">
 
-                {/* Left Side */}
+                {/* Left Side Branding */}
                 <div className="p-10 md:p-14 flex flex-col justify-center bg-white/30 border-r border-white/50 relative">
                     <div className="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xl mb-8 shadow-sm">
                         V
@@ -63,13 +66,9 @@ export default function LoginPage() {
                     </p>
 
                     <div className="mt-auto pt-8 border-t border-slate-200/50">
-                        <p className="text-[11px] text-slate-400 font-semibold tracking-widest uppercase">
-                            Neo-Glass Precision · DummyJSON auth
-                        </p>
                     </div>
                 </div>
 
-                {/* Right Side */}
                 <div className="p-10 md:p-14 flex flex-col justify-center">
                     <div className="mb-8">
                         <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase mb-2">
@@ -92,53 +91,40 @@ export default function LoginPage() {
                         )}
 
                         <div className="space-y-2">
-                            <label className="block text-sm font-semibold text-slate-700" htmlFor="username">
-                                Username
-                            </label>
-                            <input
+                            <Label htmlFor="username">Username</Label>
+                            <Input
                                 id="username"
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                className="w-full px-4 py-3 bg-white/70 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400 text-slate-900 shadow-sm"
                                 placeholder="Enter username"
                                 required
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <label className="block text-sm font-semibold text-slate-700" htmlFor="password">
-                                Password
-                            </label>
-                            <input
+                            <Label htmlFor="password">Password</Label>
+                            <Input
                                 id="password"
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-4 py-3 bg-white/70 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400 text-slate-900 shadow-sm"
                                 placeholder="Enter password"
                                 required
                             />
                         </div>
 
-                        <button
-                            type="submit"
-                            disabled={isLoading}
-                            className="w-full mt-2 bg-slate-900 hover:bg-slate-800 text-white font-medium py-3.5 px-4 rounded-xl transition-all active:scale-[0.98] flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed shadow-md shadow-slate-900/10"
-                        >
-                            {isLoading ? (
-                                <Loader2 className="w-5 h-5 animate-spin" />
-                            ) : (
-                                "Enter dashboard"
-                            )}
-                        </button>
+                        <div className="pt-2">
+                            <Button type="submit" isLoading={isLoading}>
+                                Enter dashboard
+                            </Button>
+                        </div>
 
                         <p className="text-xs text-center text-slate-500 mt-6">
                             Demo credentials: <span className="font-mono font-semibold text-slate-700">emilys</span> / <span className="font-mono font-semibold text-slate-700">emilyspass</span>
                         </p>
                     </form>
                 </div>
-
             </div>
         </div>
     );
