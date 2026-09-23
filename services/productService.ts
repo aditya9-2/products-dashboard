@@ -1,5 +1,6 @@
 import { apiClient } from "@/lib/axios";
-import { Product } from "@/types/products";
+import { ProductFormData } from "@/types/products";
+import { applyLocalMutationsToList, applyLocalMutationsToSingle, getLocalAddedProducts } from "@/lib/localState";
 
 export interface GetProductsParams {
     limit?: number;
@@ -37,6 +38,13 @@ export const getProducts = async ({
     }
 
     const response = await apiClient.get(url, { params });
+
+    response.data.products = applyLocalMutationsToList(response.data.products);
+
+    const localAddedCount = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("volt_added") || "[]").length : 0;
+    const localDeletedCount = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("volt_deleted") || "[]").length : 0;
+    response.data.total = response.data.total + localAddedCount - localDeletedCount;
+
     return response.data;
 };
 
@@ -45,27 +53,35 @@ export const getCategories = async () => {
     return response.data;
 };
 
-export interface Review {
-    rating: number;
-    comment: string;
-    date: string;
-    reviewerName: string;
-}
 
-export interface ProductDetails extends Product {
-    description: string;
-    images: string[];
-    reviews: Review[];
-    brand?: string;
-    sku?: string;
-}
+export const getProductById = async (id: string) => {
 
+    if (typeof window !== "undefined") {
+        const localProd = getLocalAddedProducts().find((p: any) => p.id.toString() === id.toString());
+        if (localProd) return applyLocalMutationsToSingle(localProd);
+    }
 
-export const getProductById = async (id: string): Promise<ProductDetails> => {
-    const response = await apiClient.get(`/products/${id}`);
+    try {
+        const response = await apiClient.get(`/products/${id}`);
+        return applyLocalMutationsToSingle(response.data);
+    } catch (err: any) {
+        if (err.response?.status === 404 && typeof window !== "undefined") {
+            const localProd = getLocalAddedProducts().find((p: any) => p.id.toString() === id.toString());
+            if (localProd) return localProd;
+        }
+        throw err;
+    }
+};
+
+export const addProduct = async (data: ProductFormData) => {
+    const response = await apiClient.post("/products/add", data);
     return response.data;
 };
 
+export const editProduct = async (id: string | number, data: Partial<ProductFormData>) => {
+    const response = await apiClient.put(`/products/${id}`, data);
+    return response.data;
+};
 
 export const deleteProduct = async (id: string | number) => {
     const response = await apiClient.delete(`/products/${id}`);

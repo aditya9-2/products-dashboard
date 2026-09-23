@@ -9,11 +9,13 @@ export const saveLocalAddedProduct = (product: any) => {
 
     const uniqueId = Date.now();
 
+    const imageUrl = product.thumbnail || "https://dummyjson.com/image/150";
+
     const newProduct = {
         ...product,
         id: uniqueId,
         thumbnail: product.thumbnail || "https://dummyjson.com/image/150",
-        images: product.images || ["https://dummyjson.com/image/150"],
+        images: [imageUrl],
         rating: product.rating || 5.0,
     };
 
@@ -22,7 +24,11 @@ export const saveLocalAddedProduct = (product: any) => {
 
 export const saveLocalEditedProduct = (id: number, data: any) => {
     const edited = getEdited();
-    edited[id] = { ...edited[id], ...data };
+    const updatedData = { ...data };
+    if (updatedData.thumbnail) {
+        updatedData.images = [updatedData.thumbnail];
+    }
+    edited[id] = { ...edited[id], ...updatedData };
     localStorage.setItem("volt_edited", JSON.stringify(edited));
 };
 
@@ -36,19 +42,17 @@ export const saveLocalDeletedProduct = (id: number) => {
 
 export const applyLocalMutationsToList = (apiProducts: Product[]): Product[] => {
     if (typeof window === "undefined") return apiProducts;
-
     const added = getAdded();
     const edited = getEdited();
     const deleted = getDeleted();
 
-    // Remove deleted items
     let merged = apiProducts.filter((p) => !deleted.includes(p.id));
-
-    // Overwrite with edited items
     merged = merged.map((p) => (edited[p.id] ? { ...p, ...edited[p.id] } : p));
 
     const apiIds = new Set(merged.map((p) => p.id));
-    const newItems = added.filter((p) => !apiIds.has(p.id));
+    const newItems = added
+        .filter((p) => !apiIds.has(p.id))
+        .filter((p) => !deleted.includes(p.id));
 
     return [...newItems, ...merged];
 };
@@ -62,3 +66,26 @@ export const applyLocalMutationsToSingle = (apiProduct: any) => {
     }
     return apiProduct;
 };
+
+export const isLocalOnlyProduct = (id: number | string): boolean => {
+    if (typeof window === "undefined") return false;
+    const added = getAdded();
+    return added.some((p) => p.id.toString() === id.toString());
+};
+
+export const updateLocalAddedProduct = (id: number, data: any) => {
+    const added = getAdded();
+    const idx = added.findIndex((p) => p.id.toString() === id.toString());
+    if (idx === -1) return false;
+
+    const updated = { ...added[idx], ...data };
+    if (data.thumbnail) {
+        updated.thumbnail = data.thumbnail;
+        updated.images = [data.thumbnail];
+    }
+    added[idx] = updated;
+    localStorage.setItem("volt_added", JSON.stringify(added));
+    return true;
+};
+
+export const getLocalAddedProducts = (): Product[] => getAdded();

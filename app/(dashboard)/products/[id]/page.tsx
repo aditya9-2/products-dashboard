@@ -4,13 +4,16 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, ArrowLeft } from "lucide-react";
 
-import { getProductById, ProductDetails } from "@/services/productService";
+import { getProductById } from "@/services/productService";
+import { ProductDetails } from "@/types/products";
 import { Button } from "@/components/ui/button";
 
 import { ProductNotFound } from "@/components/products/ProductNotFound";
 import { ProductImageGallery } from "@/components/products/ProductImageGallery";
 import { ProductInfo } from "@/components/products/ProductInfo";
 import { ProductReviews } from "@/components/products/ProductReviews";
+import { DeleteProductModal } from "@/components/products/DeleteProductModal";
+import { saveLocalDeletedProduct } from "@/lib/localState";
 
 export default function ProductDetailsPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter();
@@ -21,6 +24,9 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
     const [product, setProduct] = useState<ProductDetails | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
+
+    // Add state for the delete modal
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     useEffect(() => {
         let isMounted = true;
@@ -48,6 +54,13 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
         fetchProduct();
         return () => { isMounted = false; };
     }, [productId]);
+
+    // Handle successful deletion
+    const handleDeleteSuccess = (id: number) => {
+        saveLocalDeletedProduct(id);
+        setIsDeleteModalOpen(false);
+        router.push("/products"); // Redirect back to list
+    };
 
     if (isLoading) {
         return (
@@ -83,10 +96,16 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
                     </Button>
 
                     <div className="flex gap-2">
-                        <Button className="w-auto px-4 py-2 bg-white text-blue-600 hover:bg-blue-50 border border-blue-100 shadow-sm">
+                        <Button
+                            onClick={() => router.push(`/products/${product.id}/edit`)}
+                            className="w-auto px-4 py-2 bg-white text-blue-600 hover:bg-blue-50 border border-blue-100 shadow-sm"
+                        >
                             Edit Product
                         </Button>
-                        <Button className="w-auto px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 border border-red-100 shadow-sm">
+                        <Button
+                            onClick={() => setIsDeleteModalOpen(true)}
+                            className="w-auto px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 border border-red-100 shadow-sm"
+                        >
                             Delete
                         </Button>
                     </div>
@@ -98,6 +117,15 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
                 </div>
 
                 <ProductReviews reviews={product.reviews} />
+
+                {/* Mount the Delete Modal */}
+                <DeleteProductModal
+                    isOpen={isDeleteModalOpen}
+                    onClose={() => setIsDeleteModalOpen(false)}
+                    productId={product.id}
+                    productTitle={product.title}
+                    onSuccess={handleDeleteSuccess}
+                />
             </div>
         </div>
     );
