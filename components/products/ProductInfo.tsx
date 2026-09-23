@@ -1,5 +1,6 @@
 import { Star, Package, Tag } from "lucide-react";
-import { ProductDetails } from "@/services/productService";
+import { ProductDetails } from "@/types/products";
+import { formatCurrency } from "@/lib/utils";
 
 export function ProductInfo({ product }: { product: ProductDetails }) {
     return (
@@ -18,7 +19,7 @@ export function ProductInfo({ product }: { product: ProductDetails }) {
             <h1 className="text-3xl font-extrabold text-slate-900 mb-4">{product.title}</h1>
 
             <div className="flex items-end gap-4 mb-6 pb-6 border-b border-slate-200">
-                <span className="text-4xl font-black text-slate-900">${product.price.toFixed(2)}</span>
+                <span className="text-4xl font-black text-slate-900">{formatCurrency(product.price)}</span>
                 <div className="flex items-center gap-1 mb-1 bg-yellow-50 px-2 py-1 rounded-lg text-yellow-700 font-bold text-sm">
                     {product.rating} <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
                 </div>
