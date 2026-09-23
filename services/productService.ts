@@ -28,7 +28,7 @@ export const getProducts = async ({
         url = `/products/search`;
     }
 
-    const params: Record<string, any> = { limit, skip };
+    const params: Record<string, string | number> = { limit, skip };
 
     if (search && !category) {
         params.q = search;

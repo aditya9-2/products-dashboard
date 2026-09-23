@@ -54,6 +54,7 @@ function ProductsView() {
 
     useEffect(() => {
         let isMounted = true;
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- resets loading/error state per fetch, not a cascading update
         setIsLoading(true);
         setError("");
 
@@ -71,7 +72,7 @@ function ProductsView() {
                     setTotal(data.total);
                     setIsLoading(false);
                 }
-            } catch (err: any) {
+            } catch {
                 if (isMounted) {
                     setError("Failed to load products. Please try again.");
                     setIsLoading(false);
@@ -81,6 +82,7 @@ function ProductsView() {
 
         fetchData();
         return () => { isMounted = false; };
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- categories.length intentionally excluded to avoid refetch loop
     }, [page, limit, search, category, sortBy, order]);
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

@@ -25,6 +25,7 @@ apiClient.interceptors.response.use((response) => response, (error) => {
     if (error.response?.status === 401) {
       if (typeof window !== "undefined") {
         localStorage.removeItem("auth_token");
+        // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- interceptor runs outside React; no router instance available here
         window.location.href = "/login";
       }
     }

@@ -15,6 +15,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         if (!token) {
             router.replace("/login");
         } else {
+            // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time auth check, no cascading render risk
             setIsAuthorized(true);
         }
     }, [router, pathname]);

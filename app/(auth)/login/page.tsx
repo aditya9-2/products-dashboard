@@ -6,6 +6,7 @@ import { loginUser } from "@/services/authService";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AxiosError } from "axios";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -38,8 +39,9 @@ export default function LoginPage() {
                 router.push("/products");
             }
         } catch (err: any) {
+            const error = err as AxiosError<{ message?: string }>;
             setError(
-                err.response?.data?.message ||
+                error.response?.data?.message ||
                 "Invalid credentials. Please try again."
             );
         } finally {
