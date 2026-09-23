@@ -1,32 +1,30 @@
 @import "tailwindcss";
 
 @theme {
-  --color-canvas: #0B0F28;
-  --color-primary: #1C2459;
-  --color-primary-hover: #26327A;
-  --color-primary-glass: rgba(28, 36, 89, 0.45);
-  --color-primary-glass-hover: rgba(28, 36, 89, 0.70);
+  /* Light Theme Variables */
+  --color-canvas: #F8FAFC;
+  --color-primary: #0F172A;
+  --color-primary-hover: #1E293B;
 
-  --color-accent: #F5FF67;
-  --color-accent-hover: #E8F542;
-  --color-accent-dim: rgba(245, 255, 103, 0.15);
+  /* Light Glassmorphism */
+  --color-primary-glass: rgba(255, 255, 255, 0.65);
+  --color-primary-glass-hover: rgba(255, 255, 255, 0.85);
 
-  --color-danger: #FF4D4D;
-  --color-danger-dim: rgba(255, 77, 77, 0.15);
+  --color-accent: #3B82F6;
+  --color-accent-dim: rgba(59, 130, 246, 0.15);
 
-  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  --shadow-glow: 0 0 25px rgba(245, 255, 103, 0.2);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
   background-color: var(--color-canvas);
-  color: #F8FAFC;
+  color: var(--color-primary);
   min-height: 100vh;
-  overflow-x: hidden;
+  /* Removed overflow-x-hidden from body as it can break sticky positioning */
 }
 
 /* Glassmorphic Classes */
@@ -34,7 +32,7 @@ body {
   background: var(--color-primary-glass);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   box-shadow: var(--shadow-glass);
 }
 
@@ -44,24 +42,25 @@ body {
 
 .glass-panel-hover:hover {
   background: var(--color-primary-glass-hover);
-  border-color: rgba(245, 255, 103, 0.3);
+  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
 }
 
-/* Custom Scrollbars */
+/* Custom Scrollbars for Light Theme */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0B0F28;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(28, 36, 89, 0.8);
+  background: rgba(15, 23, 42, 0.15);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #F5FF67;
+  background: rgba(15, 23, 42, 0.3);
 }
