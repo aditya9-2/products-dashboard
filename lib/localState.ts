@@ -1,14 +1,14 @@
-import { Product } from "@/types/products";
+import { Product, ProductFormData } from "@/types/products";
+
+type LocalEdit = Partial<ProductFormData> & { images?: string[] };
 
 const getAdded = (): Product[] => JSON.parse(localStorage.getItem("volt_added") || "[]");
-const getEdited = (): Record<string, any> => JSON.parse(localStorage.getItem("volt_edited") || "{}");
+const getEdited = (): Record<string, LocalEdit> => JSON.parse(localStorage.getItem("volt_edited") || "{}");
 const getDeleted = (): number[] => JSON.parse(localStorage.getItem("volt_deleted") || "[]");
 
-export const saveLocalAddedProduct = (product: any) => {
+export const saveLocalAddedProduct = (product: Product) => {
     const added = getAdded();
-
     const uniqueId = Date.now();
-
     const imageUrl = product.thumbnail || "https://dummyjson.com/image/150";
 
     const newProduct = {
@@ -17,14 +17,14 @@ export const saveLocalAddedProduct = (product: any) => {
         thumbnail: product.thumbnail || "https://dummyjson.com/image/150",
         images: [imageUrl],
         rating: product.rating || 5.0,
-    };
+    } as Product;
 
     localStorage.setItem("volt_added", JSON.stringify([newProduct, ...added]));
 };
 
-export const saveLocalEditedProduct = (id: number, data: any) => {
+export const saveLocalEditedProduct = (id: number, data: Partial<ProductFormData>) => {
     const edited = getEdited();
-    const updatedData = { ...data };
+    const updatedData: LocalEdit = { ...data };
     if (updatedData.thumbnail) {
         updatedData.images = [updatedData.thumbnail];
     }
@@ -57,9 +57,8 @@ export const applyLocalMutationsToList = (apiProducts: Product[]): Product[] => 
     return [...newItems, ...merged];
 };
 
-export const applyLocalMutationsToSingle = (apiProduct: any) => {
+export const applyLocalMutationsToSingle = <T extends { id: number }>(apiProduct: T): T => {
     if (typeof window === "undefined") return apiProduct;
-
     const edited = getEdited();
     if (edited[apiProduct.id]) {
         return { ...apiProduct, ...edited[apiProduct.id] };
@@ -69,16 +68,15 @@ export const applyLocalMutationsToSingle = (apiProduct: any) => {
 
 export const isLocalOnlyProduct = (id: number | string): boolean => {
     if (typeof window === "undefined") return false;
-    const added = getAdded();
-    return added.some((p) => p.id.toString() === id.toString());
+    return getAdded().some((p) => p.id.toString() === id.toString());
 };
 
-export const updateLocalAddedProduct = (id: number, data: any) => {
+export const updateLocalAddedProduct = (id: number, data: Partial<ProductFormData>) => {
     const added = getAdded();
     const idx = added.findIndex((p) => p.id.toString() === id.toString());
     if (idx === -1) return false;
 
-    const updated = { ...added[idx], ...data };
+    const updated: Product & { images?: string[] } = { ...added[idx], ...data };
     if (data.thumbnail) {
         updated.thumbnail = data.thumbnail;
         updated.images = [data.thumbnail];

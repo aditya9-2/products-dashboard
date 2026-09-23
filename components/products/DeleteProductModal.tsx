@@ -25,9 +25,9 @@ export function DeleteProductModal({ isOpen, onClose, productId, productTitle, o
             if (!isLocalOnlyProduct(productId)) {
                 await deleteProduct(productId);
             }
-           
+
             onSuccess(productId);
-        } catch (err) {
+        } catch {
             setError("Failed to delete product. Please try again.");
             setIsDeleting(false);
         }
@@ -41,7 +41,7 @@ export function DeleteProductModal({ isOpen, onClose, productId, productTitle, o
                 </div>
 
                 <p className="text-slate-600">
-                    Are you sure you want to delete <span className="font-bold text-slate-900">"{productTitle}"</span>?
+                    Are you sure you want to delete <span className="font-bold text-slate-900">&quot;{productTitle}&quot;</span>?
                     This action cannot be undone.
                 </p>
 

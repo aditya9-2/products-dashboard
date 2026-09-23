@@ -42,7 +42,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                     });
                     setIsLoading(false);
                 }
-            } catch (error) {
+            } catch {
                 if (isMounted) {
                     alert("Failed to load product data.");
                     router.push("/products");

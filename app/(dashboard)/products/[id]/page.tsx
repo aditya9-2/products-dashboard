@@ -22,15 +22,12 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
     const productId = unwrappedParams.id;
 
     const [product, setProduct] = useState<ProductDetails | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true); // start true, don't set it inside the effect
     const [error, setError] = useState("");
-
-    // Add state for the delete modal
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     useEffect(() => {
         let isMounted = true;
-        setIsLoading(true);
 
         const fetchProduct = async () => {
             try {
@@ -39,13 +36,10 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
                     setProduct(data);
                     setIsLoading(false);
                 }
-            } catch (err: any) {
+            } catch (err) {
                 if (isMounted) {
-                    if (err.response?.status === 404) {
-                        setError("404");
-                    } else {
-                        setError("Failed to load product details.");
-                    }
+                    const status = (err as { response?: { status?: number } })?.response?.status;
+                    setError(status === 404 ? "404" : "Failed to load product details.");
                     setIsLoading(false);
                 }
             }

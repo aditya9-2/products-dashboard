@@ -1,6 +1,7 @@
 import { apiClient } from "@/lib/axios";
-import { ProductFormData } from "@/types/products";
+import { ProductDetails, ProductFormData } from "@/types/products";
 import { applyLocalMutationsToList, applyLocalMutationsToSingle, getLocalAddedProducts } from "@/lib/localState";
+import { AxiosError } from "axios";
 
 export interface GetProductsParams {
     limit?: number;
@@ -54,20 +55,20 @@ export const getCategories = async () => {
 };
 
 
-export const getProductById = async (id: string) => {
-
+export const getProductById = async (id: string): Promise<ProductDetails> => {
     if (typeof window !== "undefined") {
-        const localProd = getLocalAddedProducts().find((p: any) => p.id.toString() === id.toString());
-        if (localProd) return applyLocalMutationsToSingle(localProd);
+        const localProd = getLocalAddedProducts().find((p) => p.id.toString() === id.toString());
+        if (localProd) return applyLocalMutationsToSingle(localProd as ProductDetails);
     }
 
     try {
-        const response = await apiClient.get(`/products/${id}`);
+        const response = await apiClient.get<ProductDetails>(`/products/${id}`);
         return applyLocalMutationsToSingle(response.data);
-    } catch (err: any) {
-        if (err.response?.status === 404 && typeof window !== "undefined") {
-            const localProd = getLocalAddedProducts().find((p: any) => p.id.toString() === id.toString());
-            if (localProd) return localProd;
+    } catch (err) {
+        const error = err as AxiosError;
+        if (error.response?.status === 404 && typeof window !== "undefined") {
+            const localProd = getLocalAddedProducts().find((p) => p.id.toString() === id.toString());
+            if (localProd) return localProd as ProductDetails;
         }
         throw err;
     }
