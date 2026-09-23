@@ -53,7 +53,7 @@ export default function LoginPage() {
             <div className="absolute top-[-10%] left-[-5%] w-96 h-96 bg-blue-200/50 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
             <div className="absolute bottom-[-10%] right-[-5%] w-96 h-96 bg-yellow-100/60 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
 
-            <div className="relative w-full max-w-[900px] grid grid-cols-1 md:grid-cols-2 bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] rounded-3xl overflow-hidden z-10">
+            <div className="relative w-full max-w-225 grid grid-cols-1 md:grid-cols-2 bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] rounded-3xl overflow-hidden z-10">
 
                 <div className="p-10 md:p-14 flex flex-col justify-center bg-white/30 border-r border-white/50 relative">
                     <div className="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xl mb-8 shadow-sm">
