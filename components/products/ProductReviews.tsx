@@ -20,7 +20,7 @@ export function ProductReviews({ reviews }: { reviews: Review[] }) {
                                 ))}
                             </div>
                         </div>
-                        <p className="text-slate-600 text-sm mb-3">"{review.comment}"</p>
+                        <p className="text-slate-600 text-sm mb-3">&quot;{review.comment}&quot;</p>
                         <span className="text-xs text-slate-400 font-medium">
                             {new Date(review.date).toLocaleDateString()}
                         </span>
